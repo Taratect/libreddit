@@ -1,2 +1,28 @@
-run = "while :; do set -ex; nix-env -iA nixpkgs.unzip; curl -o./libreddit.zip -fsSL -- https://nightly.link/libreddit/libreddit/workflows/main-rust/master/libreddit.zip; unzip -n libreddit.zip; mv target/x86_64-unknown-linux-gnu/release/libreddit .; chmod +x libreddit; set +e; ./libreddit -H 63115200; sleep 1; done"
+run = "while :; do set -ex; nix-env -iA nixpkgs.unzip; curl -o./libreddit -fsSL -- https://github.com/libreddit/libreddit/releases/download/v0.30.1/libreddit; chmod +x libreddit; set +e; ./libreddit -H 63115200; sleep 1; done"
 language = "bash"
+entrypoint = "src/main.rs"
+hidden = ["target"]
+
+[languages]
+
+[languages.rust]
+pattern = "**/*.rs"
+
+[languages.rust.languageServer]
+start = "rust-analyzer"
+
+[packager]
+language = "rust"
+
+[packager.features]
+packageSearch = true
+
+[nix]
+channel = "stable-22_11"
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix"]
+
+[deployment]
+build = ["cargo build --release"]
+run = ["./target/release/my-project"]
